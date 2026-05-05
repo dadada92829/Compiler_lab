@@ -9,7 +9,6 @@
 
 ```bash
 git clone https://github.com/dadada92829/Compiler_lab.git
-cd Compiler_lab
 ```
 
 ## 2. 启动 Docker 环境
