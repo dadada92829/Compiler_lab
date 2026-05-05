@@ -22,8 +22,6 @@ docker pull frankd35/demo:v3
 
 从项目根目录启动容器，并挂载到容器内 `/coursegrader`。
 
-Windows PowerShell：
-
 ```powershell
 docker run -it --rm -v "你的路径\Compiler_lab:/coursegrader" frankd35/demo:v3
 ```
