@@ -1,57 +1,138 @@
 # Compiler_lab
 
-重庆大学编译原理实验项目。当前仓库包含实验 1、实验 2、实验 3 的代码与测试框架。
+重庆大学编译原理实验项目，包含实验 1、实验 2、实验 3。
 
 实验 3 本地测试结果：58 个测试点全部通过。
 
-## 使用 Docker 测试
+## 1. 下载项目
 
-先把仓库下载到本地：
+在宿主机上执行，不是在 Docker 容器里执行：
 
 ```bash
 git clone https://github.com/dadada92829/Compiler_lab.git
 cd Compiler_lab
 ```
 
-拉取实验指导书指定的 Docker 镜像：
+## 2. 启动 Docker 环境
+
+拉取实验指导书中的镜像：
 
 ```bash
 docker pull frankd35/demo:v3
 ```
 
-启动容器并把当前项目挂载到 `/coursegrader`。
+从宿主机的项目根目录启动容器，并挂载到容器内 `/coursegrader`。
 
 Windows PowerShell：
 
 ```powershell
+cd D:\你的路径\Compiler_lab
 docker run -it --rm -v "${PWD}:/coursegrader" frankd35/demo:v3
 ```
 
-macOS / Linux：
+如果上面的 `${PWD}` 挂载失败，改用绝对路径：
+
+```powershell
+docker run -it --rm -v "D:\你的路径\Compiler_lab:/coursegrader" frankd35/demo:v3
+```
+
+macOS / Linux / Git Bash：
 
 ```bash
+cd /你的路径/Compiler_lab
 docker run -it --rm -v "$(pwd):/coursegrader" frankd35/demo:v3
 ```
 
-进入容器后，后续命令都在容器里执行。
+进入容器后先检查挂载是否成功：
 
-## 测试实验 1 / 实验 2
+```bash
+ls /coursegrader
+```
 
-`s0`、`s1`、`s2` 分别对应词法分析、语法分析、语义分析 / IR 测试。`test.py` 会自动重新 CMake 构建项目、运行测试并评分。
+应该能看到：
+
+```text
+CMakeLists.txt  README.md  bin  build  include  lib  main.cpp  src  test
+```
+
+如果提示 `/coursegrader` 不存在，说明 Docker 启动时没有挂载项目目录；先 `exit` 退出容器，然后重新执行上面的 `docker run -v ...:/coursegrader ...`。
+
+## 3. 编译 compiler
+
+后续命令都在 Docker 容器内执行：
+
+```bash
+cd /coursegrader
+rm -rf build bin
+mkdir build
+cd build
+cmake ..
+make -j
+ls ../bin
+```
+
+`ls ../bin` 中应该能看到：
+
+```text
+compiler
+```
+
+## 4. 测试实验 1 / 实验 2
+
+`s0`、`s1`、`s2` 分别对应词法分析、语法分析、语义分析 / IR 测试。
 
 ```bash
 cd /coursegrader/test
-
 python test.py s0
 python test.py s1
 python test.py s2
 ```
 
-评分结果会输出在终端末尾，也会写入 `test/log.txt`。满分时结果为 `score: 58 / 58`。
+满分时终端会出现：
 
-## 测试实验 3
+```text
+score: 58 / 58
+```
 
-实验 3 测试 RISC-V 汇编生成。脚本会遍历 `test/testcase/basic` 和 `test/testcase/function` 下的 58 个 `.sy` 测试点，生成汇编、链接、用 `qemu-riscv32` 运行，再与标准输出比较。
+## 5. 测试实验 3
+
+先重新编译一次：
+
+```bash
+cd /coursegrader
+rm -rf build bin
+mkdir build
+cd build
+cmake ..
+make -j
+ls ../bin
+```
+
+确认 `../bin` 下有 `compiler` 后，先单独测试 `00_main.sy`：
+
+```bash
+cd /coursegrader
+./bin/compiler test/testcase/basic/00_main.sy -S -o test/output_00.s
+head test/output_00.s
+```
+
+如果能看到 `.text`、`.globl main`、`main:` 等内容，说明 `-S` 汇编生成接口正常。
+
+再链接并用 qemu 运行：
+
+```bash
+riscv32-unknown-linux-gnu-gcc -static test/output_00.s test/sylib-riscv-linux.a -o test/output_00
+qemu-riscv32 ./test/output_00
+echo $?
+```
+
+`00_main.sy` 的返回值应为：
+
+```text
+3
+```
+
+最后批量运行 58 个实验 3 测试点：
 
 ```bash
 cd /coursegrader
@@ -64,10 +145,9 @@ bash test/run_s3.sh
 score: 58 / 58
 ```
 
-测试中间产物会生成在：
+批量测试脚本会生成这些中间产物：
 
 ```text
-test/output
 test/output_s
 test/output_exe
 test/output_run
