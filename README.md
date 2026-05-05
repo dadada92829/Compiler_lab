@@ -52,9 +52,9 @@ compiler
 
 ```bash
 cd /coursegrader/test
-python test.py s0
-python test.py s1
-python test.py s2
+python3 test.py s0
+python3 test.py s1
+python3 test.py s2
 ```
 
 ## 5. 测试实验 3
