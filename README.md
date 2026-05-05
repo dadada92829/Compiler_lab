@@ -6,7 +6,6 @@
 
 ## 1. 下载项目
 
-在宿主机上执行，不是在 Docker 容器里执行：
 
 ```bash
 git clone https://github.com/dadada92829/Compiler_lab.git
