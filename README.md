@@ -26,17 +26,6 @@ docker pull frankd35/demo:v3
 docker run -it --rm -v "你的路径\Compiler_lab:/coursegrader" frankd35/demo:v3
 ```
 
-进入容器后先检查挂载是否成功：
-
-```bash
-ls /coursegrader
-```
-
-应该能看到：
-
-```text
-CMakeLists.txt  README.md  bin  build  include  lib  main.cpp  src  test
-```
 
 ## 3. 编译 compiler
 
