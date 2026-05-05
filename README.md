@@ -14,32 +14,18 @@ cd Compiler_lab
 
 ## 2. 启动 Docker 环境
 
-拉取实验指导书中的镜像：
+拉取镜像：
 
 ```bash
 docker pull frankd35/demo:v3
 ```
 
-从宿主机的项目根目录启动容器，并挂载到容器内 `/coursegrader`。
+从项目根目录启动容器，并挂载到容器内 `/coursegrader`。
 
 Windows PowerShell：
 
 ```powershell
-cd D:\你的路径\Compiler_lab
-docker run -it --rm -v "${PWD}:/coursegrader" frankd35/demo:v3
-```
-
-如果上面的 `${PWD}` 挂载失败，改用绝对路径：
-
-```powershell
-docker run -it --rm -v "D:\你的路径\Compiler_lab:/coursegrader" frankd35/demo:v3
-```
-
-macOS / Linux / Git Bash：
-
-```bash
-cd /你的路径/Compiler_lab
-docker run -it --rm -v "$(pwd):/coursegrader" frankd35/demo:v3
+docker run -it --rm -v "你的路径\Compiler_lab:/coursegrader" frankd35/demo:v3
 ```
 
 进入容器后先检查挂载是否成功：
@@ -53,8 +39,6 @@ ls /coursegrader
 ```text
 CMakeLists.txt  README.md  bin  build  include  lib  main.cpp  src  test
 ```
-
-如果提示 `/coursegrader` 不存在，说明 Docker 启动时没有挂载项目目录；先 `exit` 退出容器，然后重新执行上面的 `docker run -v ...:/coursegrader ...`。
 
 ## 3. 编译 compiler
 
@@ -87,12 +71,6 @@ python test.py s1
 python test.py s2
 ```
 
-满分时终端会出现：
-
-```text
-score: 58 / 58
-```
-
 ## 5. 测试实验 3
 
 先重新编译一次：
@@ -107,7 +85,7 @@ make -j
 ls ../bin
 ```
 
-确认 `../bin` 下有 `compiler` 后，先单独测试 `00_main.sy`：
+先单独测试 `00_main.sy`：
 
 ```bash
 cd /coursegrader
@@ -131,23 +109,9 @@ echo $?
 3
 ```
 
-最后批量运行 58 个实验 3 测试点：
+最后批量运行实验 3 的 58 个测试点：
 
 ```bash
 cd /coursegrader
 bash test/run_s3.sh
-```
-
-全部通过时最后一行应为：
-
-```text
-score: 58 / 58
-```
-
-批量测试脚本会生成这些中间产物：
-
-```text
-test/output_s
-test/output_exe
-test/output_run
 ```
