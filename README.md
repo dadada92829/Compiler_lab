@@ -88,7 +88,7 @@ qemu-riscv32 ./test/output_00
 echo $?
 ```
 
-`00_main.sy` 的返回值应为：
+返回值应为：
 
 ```text
 3
