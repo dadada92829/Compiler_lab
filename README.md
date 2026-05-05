@@ -68,7 +68,6 @@ mkdir build
 cd build
 cmake ..
 make -j
-ls ../bin
 ```
 
 先单独测试 `00_main.sy`：
